@@ -1,3 +1,5 @@
+#include <vector>
+
 #ifdef WIN32
 #define PTO_ULONG(v) ((unsigned long)(unsigned __int64)v)
 #else
