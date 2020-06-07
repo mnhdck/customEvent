@@ -89,7 +89,7 @@ public: \
 	E_##eventName<__VA_ARGS__> eventName;
 
 #define ERegister(sender, eventName, accepter, slot) (sender)->eventName.Add(static_cast<EventAccepter*>((void*)accepter), static_cast<decltype((sender)->eventName.eType)>(slot), PTO_ULONG(accepter) - PTO_ULONG(static_cast<EventAccepter*>(accepter)))
-#define EUnRegister(sender, eventName, accepter, slot) if(sender){(sender)->eventName.Remove(accepter, static_cast<decltype((sender)->eventName.eType)>(slot));}
+#define EUnRegister(sender, eventName, accepter, slot) if(sender){(sender)->eventName.Remove(static_cast<EventAccepter*>((void*)accepter), static_cast<decltype((sender)->eventName.eType)>(slot));}
 #define ESendEvent(sender, eventName, ...) (sender)->eventName.Send(__VA_ARGS__)
 
 class EventAccepter
