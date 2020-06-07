@@ -1,4 +1,5 @@
 #include <vector>
+#include <iterator>
 
 #ifdef WIN32
 #define PTO_ULONG(v) ((unsigned long)(unsigned __int64)v)
@@ -66,7 +67,7 @@ public: \
 			m_bIsSending = true; \
 			int nSenderId = m_nSenderID; \
 			for (Info& info : m_vecList){ \
-				((info.accepter+info.offset)->*info.fun)(args...); \
+				((info.accepter)->*info.fun)(args...); \
 				if(!GetEventFactory().IsExistEventSenderID(nSenderId)) return ;} \
 			m_bIsSending = false; \
 			std::copy(m_vecAdd.begin(), m_vecAdd.end(), std::back_inserter(m_vecList)); m_vecAdd.clear(); \
@@ -87,7 +88,7 @@ public: \
 		}; \
 	E_##eventName<__VA_ARGS__> eventName;
 
-#define ERegister(sender, eventName, accepter, slot) (sender)->eventName.Add(accepter, static_cast<decltype((sender)->eventName.eType)>(slot), PTO_ULONG(accepter) - PTO_ULONG(static_cast<EventAccepter*>(accepter)))
+#define ERegister(sender, eventName, accepter, slot) (sender)->eventName.Add(static_cast<EventAccepter*>((void*)accepter), static_cast<decltype((sender)->eventName.eType)>(slot), PTO_ULONG(accepter) - PTO_ULONG(static_cast<EventAccepter*>(accepter)))
 #define EUnRegister(sender, eventName, accepter, slot) if(sender){(sender)->eventName.Remove(accepter, static_cast<decltype((sender)->eventName.eType)>(slot));}
 #define ESendEvent(sender, eventName, ...) (sender)->eventName.Send(__VA_ARGS__)
 
